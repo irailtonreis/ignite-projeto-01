@@ -41,7 +41,11 @@ export function Post(props) {
           <button type="submit">Publicar</button>
         </footer>
       </form>
-     
+      <div className={styles.commentList}>
+        <Comment />
+        <Comment />
+        <Comment />
+      </div>
     </article>
   );
 }
