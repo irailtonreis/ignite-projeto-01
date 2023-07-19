@@ -3,9 +3,25 @@ import { Comment } from "./Comment";
 import { Avatar } from "./Avatar";
 import { format, formatDistanceToNow } from "date-fns";
 import ptBR from "date-fns/locale/pt-BR";
-import { useState } from "react";
+import { ChangeEvent, FormEvent, InvalidEvent, useState } from "react";
 
-export function Post({ author, publishedAt, content }) {
+interface Author {
+  name: string;
+  avatar: string;
+  avatarUrl: string;
+  role: string;
+}
+interface Content {
+  type: "paragraph" | "link";
+  content: string;
+}
+interface PostProps {
+  author: Author;
+  publishedAt: Date;
+  content: Content[];
+}
+
+export function Post({ author, publishedAt, content }: PostProps) {
   const [comments, setComments] = useState(["Post muito bacana hein?!"]);
   const [newCommentText, setNewCommentText] = useState("");
   const publishedDateFormatted = format(
@@ -20,18 +36,18 @@ export function Post({ author, publishedAt, content }) {
     locale: ptBR,
     addSuffix: true,
   });
-  function handleCreateNewComment(event) {
+  function handleCreateNewComment(event:FormEvent) {
     event.preventDefault();
     setComments([...comments, newCommentText]);
     setNewCommentText("");
   }
 
-  function handleNewCommentChange() {
+  function handleNewCommentChange(event: ChangeEvent<HTMLTextAreaElement>) {
     event.target.setCustomValidity('');
     setNewCommentText(event.target.value);
   }
 
-  function deleteComment(commentToDelete) {
+  function deleteComment(commentToDelete: string) {
     
     const commentsWithDeleteOne = comments.filter(comment => {
       return comment !== commentToDelete;  
@@ -40,7 +56,7 @@ export function Post({ author, publishedAt, content }) {
     setComments(commentsWithDeleteOne)  
   }
 
-  function handleNewCommentInvalid() {
+  function handleNewCommentInvalid(event:InvalidEvent<HTMLTextAreaElement>) {
     event.target.setCustomValidity('Esse campo é obrigatório!');
   }
   
@@ -54,7 +70,7 @@ export function Post({ author, publishedAt, content }) {
 
           <div className={styles.authorInfo}>
             <strong>{author.name}</strong>
-            <span>{author.rule}</span>
+            <span>{author.role}</span>
           </div>
         </div>
         <time title={publishedDateFormatted} dateTime="2023-07-15 19:32:30">
